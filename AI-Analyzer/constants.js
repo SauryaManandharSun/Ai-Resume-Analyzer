@@ -178,4 +178,15 @@ export const buildPresenceChecklist = (text) => {
   ];
 };
 
+export const METRIC_CATEGORIES = [
+  {
+    label: "Content",
+    metrics: ["contentQuality", "keywordUsage", "quantifiableAchievements"],
+  },
+  {
+    label: "Format",
+    metrics: ["formatting", "atsCompatibility"],
+  },
+];
+
 export default constants;

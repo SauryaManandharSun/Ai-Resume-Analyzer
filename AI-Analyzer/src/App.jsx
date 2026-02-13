@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import constants, { buildPresenceChecklist } from "../constants.js";
+import constants, {
+  buildPresenceChecklist,
+  METRIC_CONFIG,
+} from "../constants.js";
 
 import * as pdfjsLib from "pdfjs-dist";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.min?url";
@@ -276,6 +279,27 @@ function App() {
             </div>
           </div>
         )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+          {METRIC_CONFIG.map((metric) => (
+            <div
+              key={metric.key}
+              className={`p-4 rounded-xl bg-gradient-to-r ${metric.colorClass} text-white shadow-md`}
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">{metric.icon}</span>
+                <div>
+                  <h4 className="font-bold">{metric.label}</h4>
+                  <p className="text-lg">
+                    {analysis?.performanceMetrics?.[metric.key] ??
+                      metric.defaultValue}
+                    /10
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
