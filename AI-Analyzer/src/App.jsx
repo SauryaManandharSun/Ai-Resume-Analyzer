@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import constants, { buildPresenceChecklist } from "../constants.js";
 
 import * as pdfjsLib from "pdfjs-dist";
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.min?url"; // note: .worker.min → more common naming
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.min?url";
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 function App() {
@@ -14,7 +14,6 @@ function App() {
   const [presenceChecklist, setPresenceChecklist] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Wait for Puter AI to become available
   useEffect(() => {
     const interval = setInterval(() => {
       if (window.puter?.ai?.chat) {
@@ -25,7 +24,6 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Extract text from PDF
   const extractPDF = async (file) => {
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -39,24 +37,35 @@ function App() {
     return texts.join("\n").trim();
   };
 
-  // Safely parse AI JSON response
   const parseJSONResponse = (reply) => {
     try {
       const match = reply.match(/\{[\s\S]*\}/);
-      if (!match) throw new Error("No JSON object found in AI response");
+      if (!match) throw new Error("No JSON object found");
+
       const parsed = JSON.parse(match[0]);
 
-      if (!("overallScore" in parsed) && !parsed.error) {
-        throw new Error("AI response missing 'overallScore'");
+      if (!parsed.overallScore && !parsed.error) {
+        throw new Error("Missing overallScore");
       }
-      return parsed;
+
+      const numericScore = Number(
+        String(parsed.overallScore).match(/\d+(\.\d+)?/)?.[0],
+      );
+
+      if (Number.isNaN(numericScore)) {
+        throw new Error("Invalid score format");
+      }
+
+      return {
+        ...parsed,
+        overallScore: numericScore,
+      };
     } catch (err) {
-      console.error("Failed to parse AI response:", err, "Raw reply:", reply);
-      return { overallScore: null, error: "Could not parse valid analysis" };
+      console.error("Parse error:", err);
+      return { overallScore: null, error: "Invalid AI response format" };
     }
   };
 
-  // Call AI to analyze resume
   const analyzeResume = async (text) => {
     const prompt = constants.ANALYZE_RESUME_PROMPT.replace(
       "{{DOCUMENT_TEXT}}",
@@ -76,12 +85,11 @@ function App() {
         ? response
         : response?.message?.content || "";
 
-    console.log("Raw AI response:", content); // ← helpful for debugging
+    console.log("Raw AI response:", content);
 
     return parseJSONResponse(content);
   };
 
-  // Handle file upload + analysis
   const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file || file.type !== "application/pdf") {
@@ -108,7 +116,7 @@ function App() {
       }
 
       setAnalysis(result);
-      console.log("Final analysis state:", result); // ← debug
+      console.log("Final analysis state:", result);
     } catch (err) {
       console.error("Analysis failed:", err);
       setErrorMessage(err.message || "Failed to analyze resume");
@@ -117,7 +125,6 @@ function App() {
     }
   };
 
-  // Reset everything
   const resetAnalysis = () => {
     setUploadedFile(null);
     setAnalysis(null);
@@ -129,7 +136,6 @@ function App() {
   return (
     <div className="min-h-screen bg-main-gradient p-4 sm:p-6 lg:p-8">
       <div className="max-w-5xl mx-auto mb-10 text-center">
-        {/* Header */}
         <div className="text-center mb-10">
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light bg-gradient-to-r from-cyan-300 via-teal-200 to-sky-300 bg-clip-text text-transparent mb-4">
             AI RESUME ANALYZER
@@ -139,7 +145,6 @@ function App() {
           </p>
         </div>
 
-        {/* Upload area – shown when no file is uploaded */}
         {!uploadedFile && (
           <div className="upload-area">
             <div className="upload-zone">
@@ -176,7 +181,6 @@ function App() {
           </div>
         )}
 
-        {/* Loading state */}
         {isLoading && (
           <div className="p-8 max-w-md mx-auto">
             <div className="text-center">
@@ -191,7 +195,6 @@ function App() {
           </div>
         )}
 
-        {/* Results area */}
         {uploadedFile && !isLoading && (
           <div className="space-y-6 p-4 sm:px-8 lg:px-16">
             <div className="file-info-card">
