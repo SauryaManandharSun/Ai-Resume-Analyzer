@@ -137,24 +137,19 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-main-gradient p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-[#ffc9d0]/85 font-poppins p-6">
       <div className="max-w-5xl mx-auto mb-10 text-center">
-        <div className="text-center mb-10">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light bg-gradient-to-r from-cyan-300 via-teal-200 to-sky-300 bg-clip-text text-transparent mb-4">
-            AI RESUME ANALYZER
-          </h1>
-          <p className="text-slate-300 text-sm sm:text-base">
-            Upload your PDF Resume and get instant AI Feedback
-          </p>
-        </div>
+        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-[#ff376e] mb-6">
+          AI RESUME ANALYZER
+        </h1>
 
         {!uploadedFile && (
-          <div className="upload-area">
-            <div className="upload-zone">
-              <h3 className="text-xl sm:text-2xl text-slate-200 mb-2">
+          <div style={{ boxShadow: "0 4px 15px rgba(255, 55, 110, 0.4)" }}>
+            <div className="upload-zone bg-[#ffc9d0]/85">
+              <h3 className="text-2xl text-[#ca004c] mb-2">
                 Upload Your Resume
               </h3>
-              <p className="text-slate-400 mb-6 text-sm sm:text-base">
+              <p className="text-[#8b0032] mb-6">
                 PDF files only • Max 5MB recommended
               </p>
 
@@ -168,15 +163,15 @@ function App() {
               />
               <label
                 htmlFor="file-upload"
-                className={`inline-block btn-primary ${
+                className={`inline-block w-full sm:w-auto px-6 py-4 rounded-2xl border-4 border-[#FF8DA1] text-[#ff376e] font-semibold text-lg cursor-pointer transition-all hover:bg-[#FF8DA1]/20 ${
                   !aiReady || isLoading ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-                {isLoading ? "Processing..." : "Choose PDF file"}
+                {isLoading ? "Processing..." : "Choose PDF file or Drag & Drop"}
               </label>
 
               {!aiReady && (
-                <p className="text-amber-300 mt-4 text-sm">
+                <p className="text-[#ca004c] mt-4 text-sm">
                   Waiting for AI engine to initialize...
                 </p>
               )}
@@ -185,94 +180,87 @@ function App() {
         )}
 
         {isLoading && (
-          <div className="p-8 max-w-md mx-auto">
-            <div className="text-center">
-              <div className="loading-spinner mx-auto mb-4"></div>
-              <h3 className="text-xl text-slate-200 mb-2">
-                Analyzing Your Resume
-              </h3>
-              <p className="text-slate-400">
-                This usually takes 10–25 seconds...
-              </p>
-            </div>
+          <div className="p-8 max-w-md mx-auto text-center">
+            <div className="loading-spinner mx-auto mb-4"></div>
+            <h3 className="text-xl text-[#ff376e] mb-2">
+              Analyzing Your Resume
+            </h3>
+            <p className="text-[#8b0032]">
+              This usually takes 10–25 seconds...
+            </p>
           </div>
         )}
 
         {uploadedFile && !isLoading && (
           <div className="space-y-6 p-4 sm:px-8 lg:px-16">
-            <div className="file-info-card">
+            <div className="file-info-card bg-[#FF8DA1]/85 p-6 rounded-2xl shadow-md text-white">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div className="icon-container-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border-blue-500/30">
+                <div className="icon-container-xl bg-[#ff376e]/60 p-4 rounded-xl">
                   <span className="text-3xl">📄</span>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-green-400">
+                  <h3 className="text-xl font-bold text-white">
                     Analysis Completed
                   </h3>
-                  <p className="text-slate-300 text-sm break-all">
+                  <p className="text-white text-sm break-all">
                     {uploadedFile.name}
                   </p>
                 </div>
               </div>
 
               <div className="flex flex-wrap gap-3 mt-5">
-                <button onClick={resetAnalysis} className="btn-secondary">
+                <button
+                  onClick={resetAnalysis}
+                  className="px-6 py-3 bg-[#ca004c]/85 rounded-xl font-semibold hover:bg-[#ca004c]/100 transition"
+                >
                   Upload New Resume
                 </button>
               </div>
 
               {analysis ? (
                 analysis.overallScore !== null ? (
-                  <div className="score-card mt-6">
-                    <div className="text-center">
-                      <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-                        Overall Score
-                      </h2>
-                      <p className="text-7xl sm:text-9xl font-extrabold text-cyan-400 drop-shadow-lg">
-                        {analysis.overallScore}
-                      </p>
+                  <div className="score-card mt-6 p-6 rounded-3xl bg-[#ff376e]/85 shadow-lg text-center">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+                      Overall Score
+                    </h2>
+                    <p className="text-7xl sm:text-9xl font-extrabold text-[#ffc9d0] drop-shadow-lg">
+                      {analysis.overallScore}
+                    </p>
 
-                      <div
-                        className={`inline-flex items-center gap-2 mt-4 px-6 py-3 rounded-full text-lg font-semibold ${
-                          analysis.overallScore >= 8
-                            ? "score-status-excellent"
-                            : analysis.overallScore >= 6
-                              ? "score-status-good"
-                              : "score-status-improvement"
-                        }`}
-                      >
-                        <span>
-                          {analysis.overallScore >= 8
-                            ? "🌟 Excellent"
-                            : analysis.overallScore >= 6
-                              ? "⭐ Good"
-                              : "📈 Needs Improvement"}
-                        </span>
-                      </div>
+                    <div
+                      className={`inline-flex items-center gap-2 mt-4 px-6 py-3 rounded-full text-lg font-semibold ${
+                        analysis.overallScore >= 8
+                          ? "bg-[#FF8DA1]/85"
+                          : analysis.overallScore >= 6
+                            ? "bg-[#ff376e]/85"
+                            : "bg-[#ca004c]/85"
+                      } text-white`}
+                    >
+                      <span>
+                        {analysis.overallScore >= 8
+                          ? "🌟 Excellent"
+                          : analysis.overallScore >= 6
+                            ? "⭐ Good"
+                            : "📈 Needs Improvement"}
+                      </span>
                     </div>
                   </div>
                 ) : (
-                  <div className="mt-6 p-6 bg-red-900/30 border border-red-500/40 rounded-xl text-center">
-                    <h3 className="text-xl text-red-300 mb-2">
-                      Analysis Issue
-                    </h3>
-                    <p className="text-slate-300">
-                      {analysis.error ||
-                        "Could not extract a valid score from AI response."}
-                    </p>
-                    <p className="text-slate-400 text-sm mt-3">
-                      Please try again or check the console for details.
+                  <div className="mt-6 p-6 bg-[#8b0032]/40 rounded-xl text-center text-white">
+                    <h3 className="text-xl mb-2">Analysis Issue</h3>
+                    <p>
+                      {analysis.error || "Could not extract a valid score."}
                     </p>
                   </div>
                 )
               ) : (
-                <div className="mt-6 p-6 text-center text-amber-300">
+                <div className="mt-6 p-6 text-center text-[#ca004c]">
                   No analysis result received. Please try again.
                 </div>
               )}
 
               {errorMessage && (
-                <div className="mt-4 p-4 bg-red-900/40 rounded-lg text-red-200 text-center">
+                <div className="mt-4 p-4 bg-[#8b0032]/40 rounded-lg text-center text-white">
                   {errorMessage}
                 </div>
               )}
@@ -280,26 +268,24 @@ function App() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-          {METRIC_CONFIG.map((metric) => (
-            <div
-              key={metric.key}
-              className={`p-4 rounded-xl bg-gradient-to-r ${metric.colorClass} text-white shadow-md`}
-            >
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">{metric.icon}</span>
+        {analysis && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+            {METRIC_CONFIG.map((metric) => (
+              <div
+                key={metric.key}
+                className={`p-5 rounded-2xl flex items-center gap-4 shadow-md text-white bg-[#ff376e]/85 shadow-lg`}
+              >
+                <span className="text-3xl">{metric.icon}</span>
                 <div>
                   <h4 className="font-bold">{metric.label}</h4>
                   <p className="text-lg">
-                    {analysis?.performanceMetrics?.[metric.key] ??
-                      metric.defaultValue}
-                    /10
+                    {analysis.performanceMetrics[metric.key]}/10
                   </p>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
