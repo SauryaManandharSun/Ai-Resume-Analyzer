@@ -1,0 +1,9 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import "tailwindcss";
+
+* {
+  font-family: "Inter", sans-serif;
+}
+
+.loading-spinner { @apply animate-spin w-10 h-10 sm:w-12 sm:h-12 border-4 border-blue-400/30 border-t-sky-400 rounded-full mx-auto mb-4; }
+.upload-zone { @apply text-center p-4 sm:p-6 lg:p-8 border-2 border-black rounded-lg; }
