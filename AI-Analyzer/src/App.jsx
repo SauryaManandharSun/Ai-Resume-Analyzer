@@ -247,7 +247,7 @@ function App() {
                   </div>
                 ) : (
                   <div className="mt-6 p-6 bg-[#8b0032]/40 rounded-xl text-center text-white">
-                    <h3 className="text-xl mb-2">Analysis Issue</h3>
+                    <h3 className="text-xl mb-2">Analysis Issues</h3>
                     <p>
                       {analysis.error || "Could not extract a valid score."}
                     </p>
